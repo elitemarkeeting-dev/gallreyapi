@@ -28,6 +28,8 @@ Route::middleware('auth')->group(function () {
     // API Token Management
     Route::get('/tokens', [\App\Http\Controllers\TokenController::class, 'index'])->name('tokens.index');
     Route::post('/tokens', [\App\Http\Controllers\TokenController::class, 'store'])->name('tokens.store');
+    Route::get('/tokens/{token}/edit', [\App\Http\Controllers\TokenController::class, 'edit'])->name('tokens.edit');
+    Route::put('/tokens/{token}', [\App\Http\Controllers\TokenController::class, 'update'])->name('tokens.update');
     Route::post('/tokens/{token}/regenerate', [\App\Http\Controllers\TokenController::class, 'regenerate'])->name('tokens.regenerate');
     Route::delete('/tokens/{token}', [\App\Http\Controllers\TokenController::class, 'destroy'])->name('tokens.destroy');
 });

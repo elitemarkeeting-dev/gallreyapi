@@ -138,16 +138,20 @@
                                 </div>
                                 
                                 <div class="flex flex-col sm:flex-row gap-2 sm:ml-4">
-                                    <form method="POST" action="{{ route('tokens.regenerate', $token->id) }}">
+                                    <a href="{{ route('tokens.edit', $token->id) }}" 
+                                        class="w-full sm:w-auto bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition font-medium text-sm text-center\">
+                                        Edit Permissions
+                                    </a>
+                                    
+                                    <form method="POST" action="{{ route('tokens.regenerate', $token->id) }}" class="w-full sm:w-auto">
                                         @csrf
                                         <button type="submit" 
-                                            onclick="return confirm('This will create a new token and delete the old one. Continue?')"
-                                            class="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium text-sm">
+                                            onclick="return confirm('This will create a new token and delete the old one. Continue?')\"\n                                            class=\"w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium text-sm\">
                                             Regenerate
                                         </button>
                                     </form>
                                     
-                                    <form method="POST" action="{{ route('tokens.destroy', $token->id) }}">
+                                    <form method="POST" action="{{ route('tokens.destroy', $token->id) }}" class="w-full sm:w-auto">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" 

@@ -71,4 +71,33 @@ class TokenController extends Controller
             ->with('token', $newToken->plainTextToken)
             ->with('success', 'API token regenerated successfully! Make sure to copy the new token.');
     }
+
+    public function edit(string $tokenId): \Illuminate\Contracts\View\View
+    {
+        $token = auth()->user()->tokens()->findOrFail($tokenId);
+
+        return view('tokens.edit', compact('token'));
+    }
+
+    public function update(Request $request, string $tokenId): \Illuminate\Http\RedirectResponse
+    {
+        $token = auth()->user()->tokens()->findOrFail($tokenId);
+
+        $request->validate([
+            'abilities' => 'required|array|min:1',
+            'abilities.*' => 'in:gallery-read,gallery-manage,user-read,full-access',
+        ]);
+
+        $abilities = $request->abilities;
+
+        // If full-access is selected, grant all abilities
+        if (in_array('full-access', $abilities)) {
+            $abilities = ['*'];
+        }
+
+        $token->update(['abilities' => $abilities]);
+
+        return redirect()->route('tokens.index')
+            ->with('success', 'API token permissions updated successfully.');
+    }
 }
