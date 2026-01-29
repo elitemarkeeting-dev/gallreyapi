@@ -13,6 +13,13 @@ class GalleryApiController extends Controller
      */
     public function index(): JsonResponse
     {
+        // Check if user has gallery-read or full access permission
+        if (! auth()->user()->tokenCan('gallery-read') && ! auth()->user()->tokenCan('*')) {
+            return response()->json([
+                'message' => 'Insufficient permissions. Requires gallery-read or full-access token ability.',
+            ], 403);
+        }
+
         $isAuthenticated = auth()->check();
 
         $galleries = Gallery::with(['user:id,name,email', 'images'])
@@ -44,6 +51,13 @@ class GalleryApiController extends Controller
      */
     public function show(Gallery $gallery): JsonResponse
     {
+        // Check if user has gallery-read or full access permission
+        if (! auth()->user()->tokenCan('gallery-read') && ! auth()->user()->tokenCan('*')) {
+            return response()->json([
+                'message' => 'Insufficient permissions. Requires gallery-read or full-access token ability.',
+            ], 403);
+        }
+
         $isAuthenticated = auth()->check();
         $gallery->load(['user:id,name,email', 'images']);
 
@@ -89,6 +103,13 @@ class GalleryApiController extends Controller
      */
     public function images(Gallery $gallery): JsonResponse
     {
+        // Check if user has gallery-read or full access permission
+        if (! auth()->user()->tokenCan('gallery-read') && ! auth()->user()->tokenCan('*')) {
+            return response()->json([
+                'message' => 'Insufficient permissions. Requires gallery-read or full-access token ability.',
+            ], 403);
+        }
+
         $isAuthenticated = auth()->check();
 
         $images = $gallery->images->map(function ($image) use ($isAuthenticated) {

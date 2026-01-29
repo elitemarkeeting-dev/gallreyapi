@@ -47,6 +47,22 @@
                 </div>
 
                 <div class="mb-6">
+                    <label for="layout" class="block text-sm font-medium text-gray-700 mb-2">Gallery Layout</label>
+                    <select id="layout" name="layout" 
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition">
+                        @foreach(\App\Models\Gallery::LAYOUTS as $key => $label)
+                            <option value="{{ $key }}" {{ old('layout', 'grid') == $key ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Choose how your images will be displayed</p>
+                    @error('layout')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-6"
                     <label class="block text-sm font-medium text-gray-700 mb-2">Upload Images (Multiple)</label>
                     
                     <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-purple-500 transition cursor-pointer">

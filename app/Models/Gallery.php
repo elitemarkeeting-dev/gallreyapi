@@ -11,6 +11,14 @@ class Gallery extends Model
         'slug',
         'description',
         'user_id',
+        'layout',
+    ];
+
+    public const LAYOUTS = [
+        'grid' => 'Grid Layout',
+        'masonry' => 'Masonry Layout',
+        'list' => 'List Layout',
+        'carousel' => 'Carousel Layout',
     ];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo

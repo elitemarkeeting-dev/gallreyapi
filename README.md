@@ -1,6 +1,6 @@
 # Gallrey API - Image Gallery Management System
 
-A modern Laravel 12 application for managing and sharing image galleries with a responsive Tailwind CSS interface and read-only REST API.
+A modern Laravel 12 application for managing and sharing image galleries with a responsive Tailwind CSS interface and read-only REST API. Features automatic GitHub Actions deployment.
 
 ## 📋 Table of Contents
 
@@ -12,6 +12,7 @@ A modern Laravel 12 application for managing and sharing image galleries with a 
 - [API Documentation](#api-documentation)
 - [CSV Export](#csv-export)
 - [Dashboard Features](#dashboard-features)
+- [Deployment](#deployment)
 - [File Structure](#file-structure)
 
 ---
@@ -49,6 +50,14 @@ A modern Laravel 12 application for managing and sharing image galleries with a 
 - **Gallery Details** - Full gallery information including images
 - **Image Endpoints** - Direct access to gallery images
 - **JSON Response** - Consistent API responses with metadata
+- **Privacy-Aware** - Hides personal info from unauthenticated users
+
+### 🚀 Deployment
+- **GitHub Actions CI/CD** - Automatic deployment on push to main
+- **One-Click Deployment** - Deploy with a single git push
+- **SSH-Based Deployment** - Secure connection to production server
+- **Database Migrations** - Auto-run migrations on deploy
+- **Zero Downtime** - Graceful deployment process
 
 ---
 
@@ -350,7 +359,57 @@ curl -H "Cookie: laravel-session=..." http://gallreyapi.test/galleries/export
 
 ---
 
-## 📁 File Structure
+## � Deployment
+
+### Automatic Deployment (GitHub Actions)
+
+Every time you push code to the `main` branch, GitHub Actions automatically:
+
+1. **Pulls** latest code from GitHub
+2. **Installs** composer dependencies
+3. **Runs** database migrations
+4. **Clears** caches and optimizes
+5. **Deploys** to production server ✅
+
+### Quick Start
+
+1. **Add GitHub Secrets**
+   - `SERVER_HOST` - Your server IP/domain
+   - `SERVER_USER` - SSH username
+   - `SERVER_SSH_KEY` - Private SSH key
+   - `SERVER_PORT` - SSH port (default: 22)
+   - `PROJECT_PATH` - Path to project on server
+
+2. **Push to Main Branch**
+   ```bash
+   git push origin main
+   ```
+
+3. **Watch Deployment**
+   - Go to GitHub Actions tab
+   - See real-time deployment progress
+
+### Manual Deployment
+
+Run the deployment script manually:
+
+```bash
+bash scripts/deploy.sh /path/to/gallreyapi
+```
+
+For complete setup instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
+
+---
+
+## 📝 Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development workflow
+- Making changes locally
+- Testing before deployment
+- Pull request process
+
+---
 
 ```
 app/

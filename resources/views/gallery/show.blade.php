@@ -55,35 +55,203 @@
         </div>
 
         @if ($gallery->images->count() > 0)
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach ($gallery->images as $image)
-                    <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition group">
-                        <div class="relative">
-                            <img src="{{ asset('storage/' . $image->image_path) }}" 
-                                alt="{{ $image->alt_text }}" 
-                                class="w-full h-64 object-cover">
-                            @can('update', $gallery)
-                                <form method="POST" action="{{ route('gallery.deleteImage', $image) }}" class="absolute top-2 right-2">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                        onclick="return confirm('Delete this image?')"
-                                        class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition opacity-0 group-hover:opacity-100 shadow-lg">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </form>
-                            @endcan
-                        </div>
-                        @if($image->alt_text)
-                            <div class="p-4">
-                                <p class="text-sm text-gray-600">{{ $image->alt_text }}</p>
+            {{-- Grid Layout (Default) --}}
+            @if($gallery->layout === 'grid')
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    @foreach ($gallery->images as $image)
+                        <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition group">
+                            <div class="relative">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                    alt="{{ $image->alt_text }}" 
+                                    class="w-full h-64 object-cover">
+                                @can('update', $gallery)
+                                    <form method="POST" action="{{ route('gallery.deleteImage', $image) }}" class="absolute top-2 right-2">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            onclick="return confirm('Delete this image?')"
+                                            class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition opacity-0 group-hover:opacity-100 shadow-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endcan
                             </div>
-                        @endif
+                            @if($image->alt_text)
+                                <div class="p-4">
+                                    <p class="text-sm text-gray-600">{{ $image->alt_text }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+
+            {{-- Masonry Layout --}}
+            @elseif($gallery->layout === 'masonry')
+                <div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
+                    @foreach ($gallery->images as $image)
+                        <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition group break-inside-avoid">
+                            <div class="relative">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                    alt="{{ $image->alt_text }}" 
+                                    class="w-full h-auto">
+                                @can('update', $gallery)
+                                    <form method="POST" action="{{ route('gallery.deleteImage', $image) }}" class="absolute top-2 right-2">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            onclick="return confirm('Delete this image?')"
+                                            class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition opacity-0 group-hover:opacity-100 shadow-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endcan
+                            </div>
+                            @if($image->alt_text)
+                                <div class="p-4">
+                                    <p class="text-sm text-gray-600">{{ $image->alt_text }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+
+            {{-- List Layout --}}
+            @elseif($gallery->layout === 'list')
+                <div class="space-y-6">
+                    @foreach ($gallery->images as $image)
+                        <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition group">
+                            <div class="flex flex-col sm:flex-row">
+                                <div class="relative sm:w-1/3">
+                                    <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                        alt="{{ $image->alt_text }}" 
+                                        class="w-full h-64 sm:h-full object-cover">
+                                    @can('update', $gallery)
+                                        <form method="POST" action="{{ route('gallery.deleteImage', $image) }}" class="absolute top-2 right-2">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                onclick="return confirm('Delete this image?')"
+                                                class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition opacity-0 group-hover:opacity-100 shadow-lg">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
+                                <div class="p-6 sm:w-2/3 flex items-center">
+                                    <div>
+                                        @if($image->alt_text)
+                                            <p class="text-lg text-gray-800 font-medium mb-2">{{ $image->alt_text }}</p>
+                                        @endif
+                                        <p class="text-sm text-gray-500">Image #{{ $loop->iteration }} in gallery</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+            {{-- Carousel Layout --}}
+            @elseif($gallery->layout === 'carousel')
+                <div id="carousel" class="relative bg-white rounded-xl overflow-hidden shadow-xl">
+                    <div class="relative h-96 sm:h-[600px]">
+                        @foreach ($gallery->images as $index => $image)
+                            <div class="carousel-item {{ $index === 0 ? 'active' : '' }} absolute inset-0 transition-opacity duration-500 {{ $index === 0 ? 'opacity-100' : 'opacity-0' }}">
+                                <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                    alt="{{ $image->alt_text }}" 
+                                    class="w-full h-full object-contain bg-gray-900">
+                                @if($image->alt_text)
+                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                                        <p class="text-white text-lg">{{ $image->alt_text }}</p>
+                                    </div>
+                                @endif
+                                @can('update', $gallery)
+                                    <form method="POST" action="{{ route('gallery.deleteImage', $image) }}" class="absolute top-4 right-4">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            onclick="return confirm('Delete this image?')"
+                                            class="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition shadow-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endcan
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
+
+                    {{-- Navigation Buttons --}}
+                    @if($gallery->images->count() > 1)
+                        <button onclick="previousSlide()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button onclick="nextSlide()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+
+                        {{-- Indicators --}}
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
+                            @foreach ($gallery->images as $index => $image)
+                                <button onclick="goToSlide({{ $index }})" 
+                                    class="indicator w-3 h-3 rounded-full {{ $index === 0 ? 'bg-white' : 'bg-white/50' }} hover:bg-white transition">
+                                </button>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                <script>
+                    let currentSlide = 0;
+                    const slides = document.querySelectorAll('.carousel-item');
+                    const indicators = document.querySelectorAll('.indicator');
+
+                    function showSlide(n) {
+                        slides.forEach((slide, index) => {
+                            slide.classList.toggle('opacity-100', index === n);
+                            slide.classList.toggle('opacity-0', index !== n);
+                        });
+                        indicators.forEach((indicator, index) => {
+                            indicator.classList.toggle('bg-white', index === n);
+                            indicator.classList.toggle('bg-white/50', index !== n);
+                        });
+                    }
+
+                    function nextSlide() {
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        showSlide(currentSlide);
+                    }
+
+                    function previousSlide() {
+                        currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                        showSlide(currentSlide);
+                    }
+
+                    function goToSlide(n) {
+                        currentSlide = n;
+                        showSlide(currentSlide);
+                    }
+
+                    // Auto-advance carousel every 5 seconds
+                    setInterval(nextSlide, 5000);
+
+                    // Keyboard navigation
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'ArrowLeft') previousSlide();
+                        if (e.key === 'ArrowRight') nextSlide();
+                    });
+                </script>
+            @endif
         @else
             <div class="bg-white rounded-xl shadow-lg p-12 text-center">
                 <svg class="mx-auto h-16 w-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

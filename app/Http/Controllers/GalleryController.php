@@ -13,18 +13,23 @@ class GalleryController extends Controller
     public function index(): \Illuminate\View\View
     {
         $galleries = Gallery::with('images', 'user')->paginate(12);
+
         return view('gallery.index', compact('galleries'));
     }
 
     public function show(Gallery $gallery): \Illuminate\View\View
     {
-        $gallery->load('images');
+        $gallery->load(['images' => function ($query) {
+            $query->orderBy('position');
+        }]);
+
         return view('gallery.show', compact('gallery'));
     }
 
     public function create(): \Illuminate\View\View
     {
         $this->authorize('create', Gallery::class);
+
         return view('gallery.create');
     }
 
@@ -34,7 +39,7 @@ class GalleryController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
+            'description' => ['nullable', 'string'],            'layout' => ['nullable', 'in:grid,masonry,list,carousel'],            'layout' => ['nullable', 'in:grid,masonry,list,carousel'],
             'images.*' => ['required', 'image', 'max:5120'],
         ]);
 
@@ -42,12 +47,13 @@ class GalleryController extends Controller
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
+            'layout' => $validated['layout'] ?? 'grid',
             'user_id' => auth()->id(),
         ]);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('galleries/' . $gallery->id, 'public');
+                $path = $image->store('galleries/'.$gallery->id, 'public');
                 $gallery->images()->create([
                     'image_path' => $path,
                     'alt_text' => $validated['name'],
@@ -61,6 +67,7 @@ class GalleryController extends Controller
     public function edit(Gallery $gallery): \Illuminate\View\View
     {
         $this->authorize('update', $gallery);
+
         return view('gallery.edit', compact('gallery'));
     }
 
@@ -78,11 +85,12 @@ class GalleryController extends Controller
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
             'description' => $validated['description'] ?? null,
+            'layout' => $validated['layout'] ?? $gallery->layout ?? 'grid',
         ]);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                $path = $image->store('galleries/' . $gallery->id, 'public');
+                $path = $image->store('galleries/'.$gallery->id, 'public');
                 $gallery->images()->create([
                     'image_path' => $path,
                     'alt_text' => $validated['name'],
@@ -101,7 +109,7 @@ class GalleryController extends Controller
             Storage::disk('public')->delete($image->image_path);
         }
 
-        Storage::disk('public')->deleteDirectory('galleries/' . $gallery->id);
+        Storage::disk('public')->deleteDirectory('galleries/'.$gallery->id);
         $gallery->delete();
 
         return redirect()->route('gallery.index')->with('success', 'Gallery deleted successfully!');
@@ -124,7 +132,7 @@ class GalleryController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="galleries-' . date('Y-m-d') . '.csv"',
+            'Content-Disposition' => 'attachment; filename="galleries-'.date('Y-m-d').'.csv"',
         ];
 
         $callback = function () use ($galleries) {

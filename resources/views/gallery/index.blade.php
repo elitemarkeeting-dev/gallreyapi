@@ -45,7 +45,16 @@
                             </div>
                         @endif
                         <div class="p-5">
-                            <h3 class="text-lg font-semibold text-gray-800 group-hover:text-purple-600 transition mb-2">{{ $gallery->name }}</h3>
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-lg font-semibold text-gray-800 group-hover:text-purple-600 transition">{{ $gallery->name }}</h3>
+                                <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                    {{ $gallery->layout === 'grid' ? 'bg-blue-100 text-blue-800' : '' }}
+                                    {{ $gallery->layout === 'masonry' ? 'bg-green-100 text-green-800' : '' }}
+                                    {{ $gallery->layout === 'list' ? 'bg-yellow-100 text-yellow-800' : '' }}
+                                    {{ $gallery->layout === 'carousel' ? 'bg-purple-100 text-purple-800' : '' }}">
+                                    {{ \App\Models\Gallery::LAYOUTS[$gallery->layout ?? 'grid'] }}
+                                </span>
+                            </div>
                             <p class="text-gray-600 text-sm line-clamp-2 mb-3">{{ Str::limit($gallery->description, 100) }}</p>
                             <div class="flex items-center text-gray-500 text-sm">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

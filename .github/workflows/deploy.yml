@@ -1,0 +1,58 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            cd ${{ secrets.PROJECT_PATH }}
+            
+            # Fetch latest changes
+            git fetch origin
+            git reset --hard origin/main
+            
+            # Install composer dependencies
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+            
+            # Run migrations
+            php artisan migrate --force
+            
+            # Clear cache
+            php artisan cache:clear
+            php artisan config:clear
+            php artisan view:clear
+            
+            # Restart queue
+            php artisan queue:restart
+            
+            # Set permissions
+            chmod -R 775 storage bootstrap/cache
+            
+            echo "✅ Deployment successful!"
+
+      - name: Deployment Status
+        if: success()
+        run: echo "🎉 Application deployed successfully to production!"
+
+      - name: Deployment Failed
+        if: failure()
+        run: echo "❌ Deployment failed. Check the logs above."
