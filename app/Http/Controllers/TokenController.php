@@ -52,4 +52,23 @@ class TokenController extends Controller
         return redirect()->route('tokens.index')
             ->with('success', 'API token deleted successfully.');
     }
+
+    public function regenerate(string $tokenId): \Illuminate\Http\RedirectResponse
+    {
+        $oldToken = auth()->user()->tokens()->findOrFail($tokenId);
+        
+        // Store token info before deletion
+        $name = $oldToken->name;
+        $abilities = $oldToken->abilities;
+        
+        // Delete old token
+        $oldToken->delete();
+        
+        // Create new token with same name and abilities
+        $newToken = auth()->user()->createToken($name, $abilities);
+        
+        return redirect()->route('tokens.index')
+            ->with('token', $newToken->plainTextToken)
+            ->with('success', 'API token regenerated successfully! Make sure to copy the new token.');
+    }
 }

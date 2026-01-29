@@ -137,15 +137,26 @@
                                     </p>
                                 </div>
                                 
-                                <form method="POST" action="{{ route('tokens.destroy', $token->id) }}" class="sm:ml-4">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                        onclick="return confirm('Are you sure you want to delete this token? This action cannot be undone.')"
-                                        class="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-medium text-sm">
-                                        Delete Token
-                                    </button>
-                                </form>
+                                <div class="flex flex-col sm:flex-row gap-2 sm:ml-4">
+                                    <form method="POST" action="{{ route('tokens.regenerate', $token->id) }}">
+                                        @csrf
+                                        <button type="submit" 
+                                            onclick="return confirm('This will create a new token and delete the old one. Continue?')"
+                                            class="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition font-medium text-sm">
+                                            Regenerate
+                                        </button>
+                                    </form>
+                                    
+                                    <form method="POST" action="{{ route('tokens.destroy', $token->id) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                            onclick="return confirm('Are you sure you want to delete this token? This action cannot be undone.')"
+                                            class="w-full sm:w-auto bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition font-medium text-sm">
+                                            Delete Token
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     @endforeach

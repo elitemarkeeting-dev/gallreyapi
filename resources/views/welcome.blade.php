@@ -8,7 +8,7 @@
 </head>
 <body class="bg-light">
     <div class="container py-5">
-        <h1 class="text-center mb-5">All Gallery Images</h1>
+        <h1 class="text-center mb-5">My Galleries</h1>
         <div id="gallery-container" class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -48,7 +48,7 @@
                 if (gallery.images && gallery.images.length > 0) {
                     gallery.images.forEach(image => {
                         allImages.push({
-                            url: image.full_path || image.url || image.image_path,
+                            url: image.url,
                             alt_text: image.alt_text || gallery.name,
                             gallery_name: gallery.name
                         });
@@ -61,7 +61,6 @@
                 return;
             }
 
-            console.log('Images found:', allImages); // Debug log
             container.className = 'row g-4';
             container.innerHTML = allImages.map(image => `
                 <div class="col-sm-6 col-md-4 col-lg-3">
